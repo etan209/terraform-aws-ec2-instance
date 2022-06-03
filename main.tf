@@ -5,7 +5,7 @@ locals {
 }
 
 resource "aws_instance" "this" {
-  count = local.create && !var.create_spot_instance ? 1 : 0
+  count = local.create && ! var.create_spot_instance ? 1 : 0
 
   ami                  = var.ami
   instance_type        = var.instance_type
@@ -137,6 +137,11 @@ resource "aws_instance" "this" {
 
   tags        = merge({ "Name" = var.name }, var.tags)
   volume_tags = var.enable_volume_tags ? merge({ "Name" = var.name }, var.volume_tags) : null
+
+  metadata_options {
+    http_endpoint = "disabled"
+    http_tokens   = "required"
+  }
 }
 
 resource "aws_spot_instance_request" "this" {
